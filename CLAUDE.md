@@ -1,0 +1,53 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Repo purpose
+
+Source repo for five Claude Code skills implementing the **LLM Wiki** pattern:
+
+- `wiki-ingest/SKILL.md` — files new knowledge into the wiki
+- `wiki-query/SKILL.md` — searches the wiki before re-researching
+- `wiki-lint/SKILL.md` — health-checks structure, surfaces orphans/contradictions/gaps
+- `wiki-before/SKILL.md` — orchestration: queries wiki at start of systematic-debugging/brainstorming
+- `wiki-after/SKILL.md` — orchestration: judges and ingests findings at end of systematic-debugging/brainstorming
+
+No build, no tests, no dependencies. Each skill is one self-contained `SKILL.md` (frontmatter + instructions). Edits ship by either copying or symlinking the directories into `~/.claude/skills/`.
+
+## Hardcoded wiki path
+
+All five `SKILL.md` files hardcode the absolute path `/Users/adrianbadarau/code/llm-wiki`. This is deliberate — skills run cwd-independent and must reach the same wiki regardless of which project invokes them. When editing, keep paths absolute and consistent across all three skills. Forks need a global find/replace.
+
+## Wiki structure the skills assume
+
+```
+llm-wiki/
+  raw/                 # immutable source files
+  wiki/
+    index.md           # master catalog
+    log.md             # append-only activity log
+    sources/           # one summary per raw source
+    concepts/          # cross-source synthesis
+    entities/          # people, tools, projects, libraries
+  CLAUDE.md            # schema/page conventions for the wiki repo itself
+```
+
+Pages carry YAML frontmatter: `title`, `type`, `sources`, `related`, `created`, `updated`, `confidence`. One ingest typically touches 5–15 pages (source summary + index + log + every relevant concept/entity page).
+
+## Editing the skills
+
+- Frontmatter `description` field drives skill auto-activation — phrasing matters; preserve trigger keywords ("save this", "remember this", "what do we know about X", "lint the wiki", etc.).
+- Three skills are designed to compose: `wiki-ingest` writes, `wiki-query` reads, `wiki-lint` audits. Keep their division of labor clean — don't make `wiki-query` write or `wiki-ingest` lint.
+- `wiki-lint` is a *report-only* skill by design. Do not add auto-fix behavior without an explicit user-confirmation step.
+
+## Integration skills (wiki-before, wiki-after)
+
+`wiki-before` and `wiki-after` are orchestration-only — they contain no wiki logic. `wiki-before` delegates to `wiki-query`; `wiki-after` delegates to `wiki-ingest`. When editing:
+- Do not add wiki read/write logic to these files — all that stays in the core wiki-* skills.
+- The judgment gate criteria in `wiki-after` are critical: non-obvious, cross-project reusable, not already covered. If the gate criteria change, update the examples table too.
+- The `description` fields must explicitly name `systematic-debugging` and `brainstorming`, and must say "at the start" / "at the end" — that phrasing is how Claude knows when to auto-fire them.
+- `wiki-after` fails silently on negative judgment — do not add any message to the user when the gate is not passed.
+
+## Testing changes
+
+No test suite. To verify a skill change, symlink the directory into `~/.claude/skills/` and trigger it from a real Claude Code session with one of its trigger phrases.

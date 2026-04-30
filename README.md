@@ -1,6 +1,6 @@
 # claude-wiki-skills
 
-Three Claude Code skills for maintaining a personal, persistent **LLM Wiki** — a structured, interlinked markdown knowledge base that the LLM builds and curates incrementally as you work across projects.
+Five Claude Code skills for maintaining a personal, persistent **LLM Wiki** — a structured, interlinked markdown knowledge base that the LLM builds and curates incrementally as you work across projects.
 
 Implements the pattern described in [Geoffrey Litt's *LLM Wiki* idea file](https://github.com/anthropics/claude-cookbooks): instead of re-deriving knowledge from raw sources on every query (RAG), the LLM compiles knowledge once into a wiki and keeps it current. The wiki is a *compounding artifact*: cross-references are pre-built, contradictions are pre-flagged, syntheses persist.
 
@@ -11,8 +11,19 @@ Implements the pattern described in [Geoffrey Litt's *LLM Wiki* idea file](https
 | **`wiki-ingest`** | "save this", "ingest X", "remember this", "file to wiki", or finishing a non-trivial finding worth keeping |
 | **`wiki-query`** | "what do we know about X", "check the wiki", "have we ingested anything on Y" |
 | **`wiki-lint`** | "lint the wiki", "audit my notes", "find orphans", "find stale claims" |
+| **`wiki-before`** | Auto-fires at the start of `systematic-debugging` or `brainstorming` — queries wiki for prior knowledge |
+| **`wiki-after`** | Auto-fires at the end of `systematic-debugging` or `brainstorming` — judges and files reusable findings |
 
 Each skill is self-contained in its own directory with a single `SKILL.md` (no scripts, no dependencies).
+
+## Integration with superpowers skills
+
+Two skills wire the wiki into the `systematic-debugging` and `brainstorming` superpowers skills automatically:
+
+- **`wiki-before`** — fires before Phase 1 of debugging or before the first brainstorming question. Surfaces any prior wiki knowledge on the topic so it informs the session.
+- **`wiki-after`** — fires after root cause is confirmed + fix verified (debugging) or after the spec is approved (brainstorming). Applies a judgment gate: only files findings that are non-obvious AND cross-project reusable AND not already well-covered in the wiki. Fails silently when the gate doesn't pass.
+
+Both skills delegate to `wiki-query` and `wiki-ingest` respectively — they add no wiki logic of their own.
 
 ## How it works
 
@@ -36,9 +47,11 @@ cp -r claude-wiki-skills/wiki-* ~/.claude/skills/
 Or symlink so this repo is the live source:
 
 ```bash
-ln -s "$PWD/claude-wiki-skills/wiki-ingest" ~/.claude/skills/wiki-ingest
-ln -s "$PWD/claude-wiki-skills/wiki-query"  ~/.claude/skills/wiki-query
-ln -s "$PWD/claude-wiki-skills/wiki-lint"   ~/.claude/skills/wiki-lint
+ln -s "$PWD/claude-wiki-skills/wiki-ingest"  ~/.claude/skills/wiki-ingest
+ln -s "$PWD/claude-wiki-skills/wiki-query"   ~/.claude/skills/wiki-query
+ln -s "$PWD/claude-wiki-skills/wiki-lint"    ~/.claude/skills/wiki-lint
+ln -s "$PWD/claude-wiki-skills/wiki-before"  ~/.claude/skills/wiki-before
+ln -s "$PWD/claude-wiki-skills/wiki-after"   ~/.claude/skills/wiki-after
 ```
 
 ## Configure your wiki path
