@@ -48,11 +48,12 @@ cp -r claude-wiki-skills/wiki-* ~/.claude/skills/
 Or symlink so this repo is the live source:
 
 ```bash
-ln -s "$PWD/claude-wiki-skills/wiki-ingest"  ~/.claude/skills/wiki-ingest
-ln -s "$PWD/claude-wiki-skills/wiki-query"   ~/.claude/skills/wiki-query
-ln -s "$PWD/claude-wiki-skills/wiki-lint"    ~/.claude/skills/wiki-lint
-ln -s "$PWD/claude-wiki-skills/wiki-before"  ~/.claude/skills/wiki-before
-ln -s "$PWD/claude-wiki-skills/wiki-after"   ~/.claude/skills/wiki-after
+ln -s "$PWD/claude-wiki-skills/wiki-ingest"      ~/.claude/skills/wiki-ingest
+ln -s "$PWD/claude-wiki-skills/wiki-query"       ~/.claude/skills/wiki-query
+ln -s "$PWD/claude-wiki-skills/wiki-lint"        ~/.claude/skills/wiki-lint
+ln -s "$PWD/claude-wiki-skills/wiki-before"      ~/.claude/skills/wiki-before
+ln -s "$PWD/claude-wiki-skills/wiki-after"       ~/.claude/skills/wiki-after
+ln -s "$PWD/claude-wiki-skills/devils-advocate"  ~/.claude/skills/devils-advocate
 ```
 
 ## Configure your wiki path

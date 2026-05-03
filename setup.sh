@@ -154,8 +154,15 @@ for skill in "${SKILLS[@]}"; do
   if [[ ! -d "$src" ]]; then
     err "Skill directory not found: $src — run setup.sh from the repo root."
   fi
-  if [[ -L "$dst" ]]; then
+  if [[ -L "$dst" && -d "$dst" ]]; then
     skip "~/.claude/skills/$skill"
+  elif [[ -L "$dst" ]]; then
+    warn "~/.claude/skills/$skill is a broken symlink — removing and re-linking"
+    rm "$dst"
+    ln -s "$src" "$dst"
+    ok "Re-linked ~/.claude/skills/$skill → $src"
+  elif [[ -e "$dst" ]]; then
+    warn "~/.claude/skills/$skill already exists but is not a symlink — skipping (remove it manually to replace)"
   else
     ln -s "$src" "$dst"
     ok "Symlinked ~/.claude/skills/$skill → $src"
@@ -163,6 +170,8 @@ for skill in "${SKILLS[@]}"; do
 done
 
 # ── Step C: Replace hardcoded wiki path in SKILL.md files ─
+# wiki-before/SKILL.md intentionally excluded — it contains no hardcoded wiki path
+# (it is orchestration-only and delegates all wiki I/O to wiki-ingest and wiki-query)
 SKILL_MDS=(
   "$SCRIPT_DIR/wiki-ingest/SKILL.md"
   "$SCRIPT_DIR/wiki-query/SKILL.md"
@@ -170,6 +179,9 @@ SKILL_MDS=(
   "$SCRIPT_DIR/wiki-after/SKILL.md"
   "$SCRIPT_DIR/devils-advocate/SKILL.md"
 )
+
+# Escape pipe characters in WIKI_PATH to prevent sed delimiter collision
+ESCAPED_WIKI_PATH="${WIKI_PATH//|/\\|}"
 
 # Detect sed flavour (macOS vs GNU)
 if sed --version 2>/dev/null | grep -q GNU; then
@@ -180,7 +192,7 @@ fi
 
 for skill_md in "${SKILL_MDS[@]}"; do
   if grep -q "$HARDCODED_PATH" "$skill_md"; then
-    "${SED_INPLACE[@]}" "s|$HARDCODED_PATH|$WIKI_PATH|g" "$skill_md"
+    "${SED_INPLACE[@]}" "s|$HARDCODED_PATH|$ESCAPED_WIKI_PATH|g" "$skill_md"
     ok "Replaced path in $skill_md"
   else
     skip "No hardcoded path found in $skill_md"
@@ -188,7 +200,7 @@ for skill_md in "${SKILL_MDS[@]}"; do
 done
 
 # Sanity check: warn if old path still present anywhere
-if grep -rl "$HARDCODED_PATH" "$SCRIPT_DIR" --include="SKILL.md" 2>/dev/null | grep -q .; then
+if grep -rl --include="SKILL.md" "$HARDCODED_PATH" "$SCRIPT_DIR" 2>/dev/null | grep -q .; then
   warn "Old hardcoded path still present in some SKILL.md files — you may have already replaced it manually."
 fi
 
