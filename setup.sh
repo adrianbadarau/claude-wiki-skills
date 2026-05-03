@@ -191,3 +191,15 @@ done
 if grep -rl "$HARDCODED_PATH" "$SCRIPT_DIR" --include="SKILL.md" 2>/dev/null | grep -q .; then
   warn "Old hardcoded path still present in some SKILL.md files — you may have already replaced it manually."
 fi
+
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "${GREEN}Setup complete.${NC}"
+echo ""
+echo "Next steps:"
+echo "  1. Restart Claude Code (or run /reload-plugins) to pick up the new skills."
+echo "  2. Drop a file into $WIKI_PATH/raw/ and say 'ingest it' to start your wiki."
+echo ""
+echo "Note: the SKILL.md files in this repo now contain your wiki path and are"
+echo "git-dirty by design. See README.md § 'Configure your wiki path'."
+echo ""
