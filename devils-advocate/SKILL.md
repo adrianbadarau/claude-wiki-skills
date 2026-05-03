@@ -64,3 +64,38 @@ If any of these sources is missing (e.g., no `docs/`, no prior specs, no wiki co
 
 > User: "It would be nice to have."
 > Skill: "Nice-to-haves are a no. What's the cost of *not* having it?"
+
+## Termination & handoff
+
+**Termination (mix mode).** Track whether each major assumption has been challenged at least once and whether the last 2 questions surfaced new contradictions. When the threshold is met, ask:
+
+> "I think we've covered the load-bearing assumptions. Ready to design, or want to push further on anything?"
+
+The user can:
+- **Extend** ("keep going on X") — continue grilling.
+- **Stop early** ("enough, design it") — proceed to handoff.
+- **Abandon** ("you're right, this is a bad idea") — skip handoff, go straight to ingest with outcome `abandoned`.
+
+**Handoff to brainstorming.** On a proceed outcome, emit this synthesis block inline (not a file):
+
+```
+## Refined problem statement
+<sharpened from grilling>
+
+## Constraints discovered
+- ...
+
+## Open questions for design
+- ...
+
+## Rejected paths (and why)
+- ...
+
+## Prior knowledge invoked
+- wiki: <pages>
+- specs: <files>
+```
+
+Then invoke `superpowers:brainstorming`, passing the synthesis block as opening context. Brainstorming proceeds normally; `wiki-after` will fire at its end and capture the resolved design.
+
+**On abandonment:** skip the brainstorming handoff. Jump directly to wiki ingest (next section).
