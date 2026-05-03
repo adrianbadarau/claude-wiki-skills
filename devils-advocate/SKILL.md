@@ -99,3 +99,20 @@ The user can:
 Then invoke `superpowers:brainstorming`, passing the synthesis block as opening context. Brainstorming proceeds normally; `wiki-after` will fire at its end and capture the resolved design.
 
 **On abandonment:** skip the brainstorming handoff. Jump directly to wiki ingest (next section).
+
+## Wiki ingest
+
+After grilling ends — whether proceeding to design or abandoning — delegate to the `wiki-ingest` skill with:
+
+- **Full Q&A transcript.** Every question asked and the user's answers.
+- **Synthesis block.** The same block emitted to brainstorming (or the version-at-abandonment).
+- **Outcome tag:** `proceed-to-design` | `abandoned` | `deferred`.
+- **Related wiki pages touched** during pre-grill exploration.
+
+`wiki-ingest` decides canonical placement. Typical outcomes: a new `concepts/grilling-<topic>.md` page, or an extension of an existing concept page with a "challenges raised" subsection, plus a `log.md` entry.
+
+**Why ingest even on proceed:** rejected paths and surfaced assumptions are the most reusable artifact. Future grills should retrieve them via `wiki-query`.
+
+**Composition with wiki-after:** `wiki-after` fires at the end of `brainstorming` and ingests the final design. Two ingests are intentional — this skill captures the *adversarial* thinking, `wiki-after` captures the *resolved* design.
+
+**No direct wiki I/O.** Do not read or write `/Users/adrianbadarau/code/llm-wiki` directly from this skill. Always delegate to `wiki-query` and `wiki-ingest`.
