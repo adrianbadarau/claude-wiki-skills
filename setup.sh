@@ -60,3 +60,22 @@ echo ""
 echo "Setting up claude-wiki-skills → wiki at: $WIKI_PATH"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
+
+# ── Step A: Wiki folder structure ────────────────────────
+DIRS=(
+  "$WIKI_PATH/raw"
+  "$WIKI_PATH/raw/notes"
+  "$WIKI_PATH/wiki"
+  "$WIKI_PATH/wiki/sources"
+  "$WIKI_PATH/wiki/concepts"
+  "$WIKI_PATH/wiki/entities"
+)
+
+for dir in "${DIRS[@]}"; do
+  if [[ -d "$dir" ]]; then
+    skip "$dir"
+  else
+    mkdir -p "$dir"
+    ok "Created $dir"
+  fi
+done
