@@ -48,16 +48,27 @@ cp -r claude-wiki-skills/wiki-* ~/.claude/skills/
 Or symlink so this repo is the live source:
 
 ```bash
-ln -s "$PWD/claude-wiki-skills/wiki-ingest"  ~/.claude/skills/wiki-ingest
-ln -s "$PWD/claude-wiki-skills/wiki-query"   ~/.claude/skills/wiki-query
-ln -s "$PWD/claude-wiki-skills/wiki-lint"    ~/.claude/skills/wiki-lint
-ln -s "$PWD/claude-wiki-skills/wiki-before"  ~/.claude/skills/wiki-before
-ln -s "$PWD/claude-wiki-skills/wiki-after"   ~/.claude/skills/wiki-after
+ln -s "$PWD/claude-wiki-skills/wiki-ingest"      ~/.claude/skills/wiki-ingest
+ln -s "$PWD/claude-wiki-skills/wiki-query"       ~/.claude/skills/wiki-query
+ln -s "$PWD/claude-wiki-skills/wiki-lint"        ~/.claude/skills/wiki-lint
+ln -s "$PWD/claude-wiki-skills/wiki-before"      ~/.claude/skills/wiki-before
+ln -s "$PWD/claude-wiki-skills/wiki-after"       ~/.claude/skills/wiki-after
+ln -s "$PWD/claude-wiki-skills/devils-advocate"  ~/.claude/skills/devils-advocate
 ```
 
 ## Configure your wiki path
 
-⚠️ **The skills currently hardcode the wiki path** to `/Users/adrianbadarau/code/llm-wiki`. If you fork, edit each `SKILL.md` and replace that absolute path with your own wiki location. The path must be absolute — the skills are deliberately cwd-independent so they fire correctly when invoked from any project.
+⚠️ **The skills currently hardcode the wiki path** to `/Users/adrianbadarau/code/llm-wiki`. Run `setup.sh` to replace it automatically:
+
+```bash
+./setup.sh --wiki-path ~/your-wiki-path
+```
+
+`setup.sh` handles: creating the wiki folder structure, symlinking the skills into `~/.claude/skills/`, replacing the hardcoded path in every `SKILL.md`, and writing a starter `CLAUDE.md` schema into your wiki repo.
+
+**Git-dirty note:** because the skills are installed as symlinks, `setup.sh`'s path-replacement step edits the `SKILL.md` files inside this cloned repo, leaving them git-dirty. This is expected — the path is personal config, not something to commit. If you pull updates and the SKILL.md files are modified by the update, re-run `setup.sh` to re-apply your path.
+
+If you prefer to edit manually: replace `/Users/adrianbadarau/code/llm-wiki` with your absolute wiki path in each `SKILL.md`. The path must be absolute — skills are deliberately cwd-independent.
 
 Recommended wiki layout (the skills assume this structure, will create subdirs on first use):
 
