@@ -1,6 +1,6 @@
 # claude-wiki-skills
 
-Five Claude Code skills for maintaining a personal, persistent **LLM Wiki** — a structured, interlinked markdown knowledge base that the LLM builds and curates incrementally as you work across projects.
+Six Claude Code skills for maintaining a personal, persistent **LLM Wiki** — a structured, interlinked markdown knowledge base that the LLM builds and curates incrementally as you work across projects — plus a confrontational pre-brainstorming gate.
 
 Implements the pattern described in [Geoffrey Litt's *LLM Wiki* idea file](https://github.com/anthropics/claude-cookbooks): instead of re-deriving knowledge from raw sources on every query (RAG), the LLM compiles knowledge once into a wiki and keeps it current. The wiki is a *compounding artifact*: cross-references are pre-built, contradictions are pre-flagged, syntheses persist.
 
@@ -13,6 +13,7 @@ Implements the pattern described in [Geoffrey Litt's *LLM Wiki* idea file](https
 | **`wiki-lint`** | "lint the wiki", "audit my notes", "find orphans", "find stale claims" |
 | **`wiki-before`** | Auto-fires at the start of `systematic-debugging` or `brainstorming` — queries wiki for prior knowledge |
 | **`wiki-after`** | Auto-fires at the end of `systematic-debugging` or `brainstorming` — judges and files reusable findings |
+| **`devils-advocate`** | Auto-fires at the start of `superpowers:brainstorming`, plus manual triggers ("grill me", "push back on this", "play devil's advocate", "challenge this idea", "stress-test my plan") — confrontationally interviews the user before design |
 
 Each skill is self-contained in its own directory with a single `SKILL.md` (no scripts, no dependencies).
 
