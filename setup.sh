@@ -20,7 +20,6 @@ usage() {
   echo ""
   echo "Example:"
   echo "  $0 --wiki-path ~/my-wiki"
-  exit 1
 }
 
 WIKI_PATH=""
@@ -28,24 +27,28 @@ WIKI_PATH=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --wiki-path)
+      [[ $# -lt 2 ]] && { echo "Error: --wiki-path requires a value." >&2; usage; exit 1; }
       shift
       WIKI_PATH="${1:-}"
       ;;
-    -h|--help) usage ;;
+    -h|--help) usage; exit 0 ;;
     *) err "Unknown argument: $1" ;;
   esac
   shift
 done
 
-[[ -z "$WIKI_PATH" ]] && usage
+[[ -z "$WIKI_PATH" ]] && { usage; exit 1; }
 
 # Expand ~ to absolute path
 WIKI_PATH="${WIKI_PATH/#\~/$HOME}"
 
+# Validate absolute path
+[[ "$WIKI_PATH" = /* ]] || err "--wiki-path must be an absolute path or start with ~. Got: '$WIKI_PATH'"
+
 # Must be run from repo root — detect by checking for a known skill dir
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ ! -d "$SCRIPT_DIR/wiki-ingest" ]]; then
-  err "Run setup.sh from the repo root (wiki-ingest/ not found next to the script)."
+  err "setup.sh must live in the repo root alongside wiki-ingest/ (wiki-ingest/ not found at $SCRIPT_DIR)."
 fi
 
 # Reject if --wiki-path points to an existing file
