@@ -161,3 +161,33 @@ for skill in "${SKILLS[@]}"; do
     ok "Symlinked ~/.claude/skills/$skill → $src"
   fi
 done
+
+# ── Step C: Replace hardcoded wiki path in SKILL.md files ─
+SKILL_MDS=(
+  "$SCRIPT_DIR/wiki-ingest/SKILL.md"
+  "$SCRIPT_DIR/wiki-query/SKILL.md"
+  "$SCRIPT_DIR/wiki-lint/SKILL.md"
+  "$SCRIPT_DIR/wiki-after/SKILL.md"
+  "$SCRIPT_DIR/devils-advocate/SKILL.md"
+)
+
+# Detect sed flavour (macOS vs GNU)
+if sed --version 2>/dev/null | grep -q GNU; then
+  SED_INPLACE=(sed -i)
+else
+  SED_INPLACE=(sed -i '')
+fi
+
+for skill_md in "${SKILL_MDS[@]}"; do
+  if grep -q "$HARDCODED_PATH" "$skill_md"; then
+    "${SED_INPLACE[@]}" "s|$HARDCODED_PATH|$WIKI_PATH|g" "$skill_md"
+    ok "Replaced path in $skill_md"
+  else
+    skip "No hardcoded path found in $skill_md"
+  fi
+done
+
+# Sanity check: warn if old path still present anywhere
+if grep -rl "$HARDCODED_PATH" "$SCRIPT_DIR" --include="SKILL.md" 2>/dev/null | grep -q .; then
+  warn "Old hardcoded path still present in some SKILL.md files — you may have already replaced it manually."
+fi
