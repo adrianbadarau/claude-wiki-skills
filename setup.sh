@@ -134,3 +134,30 @@ When I say "lint":
 SCHEMA
   ok "Wrote $WIKI_CLAUDE"
 fi
+
+# ── Step B: Skills symlinks ───────────────────────────────
+SKILLS_DIR="$HOME/.claude/skills"
+mkdir -p "$SKILLS_DIR"
+
+SKILLS=(
+  wiki-ingest
+  wiki-query
+  wiki-lint
+  wiki-before
+  wiki-after
+  devils-advocate
+)
+
+for skill in "${SKILLS[@]}"; do
+  src="$SCRIPT_DIR/$skill"
+  dst="$SKILLS_DIR/$skill"
+  if [[ ! -d "$src" ]]; then
+    err "Skill directory not found: $src — run setup.sh from the repo root."
+  fi
+  if [[ -L "$dst" ]]; then
+    skip "~/.claude/skills/$skill"
+  else
+    ln -s "$src" "$dst"
+    ok "Symlinked ~/.claude/skills/$skill → $src"
+  fi
+done
