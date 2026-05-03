@@ -29,7 +29,7 @@ Idempotent: re-running is safe. Existing dirs, symlinks, and the wiki `CLAUDE.md
 ## Steps (in order)
 
 1. **Create wiki folders** — `mkdir -p` for `raw/`, `wiki/sources/`, `wiki/concepts/`, `wiki/entities/` under the expanded wiki path.
-2. **Write `wiki/CLAUDE.md`** — embedded heredoc containing the page-conventions schema (frontmatter fields, ingest/query/lint workflows). Skips if file already exists.
+2. **Write `CLAUDE.md`** at the wiki root (i.e., `$WIKI_PATH/CLAUDE.md`) — embedded heredoc containing the page-conventions schema (frontmatter fields, ingest/query/lint workflows). Skips if file already exists.
 3. **Create `~/.claude/skills/`** if missing.
 4. **Symlink all 6 skill dirs** — `wiki-ingest`, `wiki-query`, `wiki-lint`, `wiki-before`, `wiki-after`, `devils-advocate` → `~/.claude/skills/`. Skips existing symlinks.
 5. **Path replacement** — `sed` in-place on the SKILL.md files that hardcode `/Users/adrianbadarau/code/llm-wiki` (currently: `wiki-ingest`, `wiki-query`, `wiki-lint`, `wiki-after`, `devils-advocate`). Replaces with the expanded `--wiki-path` value. macOS (`sed -i ''`) vs GNU (`sed -i`) detected via `uname`.
