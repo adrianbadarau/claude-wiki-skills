@@ -116,3 +116,11 @@ After grilling ends — whether proceeding to design or abandoning — delegate 
 **Composition with wiki-after:** `wiki-after` fires at the end of `brainstorming` and ingests the final design. Two ingests are intentional — this skill captures the *adversarial* thinking, `wiki-after` captures the *resolved* design.
 
 **No direct wiki I/O.** Do not read or write `/Users/adrianbadarau/code/llm-wiki` directly from this skill. Always delegate to `wiki-query` and `wiki-ingest`.
+
+## Non-goals
+
+- **No design output.** Do not propose architecture, file structure, or implementation details. That is `superpowers:brainstorming`'s job.
+- **No code.** Do not write, edit, or scaffold code during grilling.
+- **No direct wiki reads or writes.** All wiki I/O goes through `wiki-query` and `wiki-ingest`.
+- **No silent re-grilling.** If brainstorming auto-fires this skill but a synthesis block was already emitted in the current conversation, skip with a one-line note ("Already grilled this idea; proceeding to design.").
+- **No hostility.** Probing and direct, not abusive. The goal is sharper thinking, not discouragement.
