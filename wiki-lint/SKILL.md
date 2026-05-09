@@ -56,9 +56,13 @@ Run all of these and produce one consolidated report.
    - recommended: <top action>
    ```
 
-## Cross-Project Usage
+## Agent Compatibility
 
 Wiki path is absolute. Run from any working directory. Do not `cd` into the wiki.
+
+Use the platform's normal file/search tools:
+- Claude Code: `Read` and `Bash`.
+- Codex Desktop/CLI: shell/file reads; prefer `rg` when available, otherwise use the listed `grep`/`find` commands.
 
 ## Quick Reference
 

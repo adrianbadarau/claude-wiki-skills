@@ -21,6 +21,12 @@ Do NOT use for:
 - Mid-session (only fires at terminal state — root cause confirmed OR spec approved, not before)
 - When the user explicitly says "don't save this"
 
+## Hook Integration
+
+Claude Code can auto-select this skill from the description. Codex Desktop/CLI plugin installs also inject a `Stop` reminder from `hooks/hooks.json`, so the skill is considered after a debugging or brainstorming workflow reaches its terminal state.
+
+The hook is only a reminder. Still apply the judgment gate below and stay silent when it fails.
+
 ## Judgment Gate
 
 Before invoking `wiki-ingest`, apply this gate. Proceed **only if all three are true:**

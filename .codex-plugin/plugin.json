@@ -1,0 +1,44 @@
+{
+  "name": "claude-wiki-skills",
+  "version": "0.1.0",
+  "description": "Personal LLM Wiki skills for ingesting, querying, linting, and workflow-aware wiki checks.",
+  "author": {
+    "name": "Adrian Badarau",
+    "url": "https://github.com/adrianbadarau"
+  },
+  "homepage": "https://github.com/adrianbadarau/claude-wiki-skills",
+  "repository": "https://github.com/adrianbadarau/claude-wiki-skills",
+  "license": "MIT",
+  "keywords": [
+    "wiki",
+    "skills",
+    "notes",
+    "knowledge-base",
+    "codex",
+    "claude-code"
+  ],
+  "skills": "./",
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "LLM Wiki Skills",
+    "shortDescription": "Maintain and query a persistent personal LLM wiki",
+    "longDescription": "Skills for saving durable findings, querying prior knowledge, linting wiki health, and wiring wiki checks into debugging and brainstorming workflows.",
+    "developerName": "Adrian Badarau",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/adrianbadarau/claude-wiki-skills",
+    "privacyPolicyURL": "https://github.com/adrianbadarau/claude-wiki-skills/blob/main/README.md",
+    "termsOfServiceURL": "https://github.com/adrianbadarau/claude-wiki-skills/blob/main/LICENSE",
+    "defaultPrompt": [
+      "Check the wiki for prior knowledge.",
+      "Save this finding to the wiki.",
+      "Lint my LLM wiki."
+    ],
+    "brandColor": "#2563EB",
+    "screenshots": []
+  }
+}

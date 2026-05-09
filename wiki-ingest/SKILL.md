@@ -7,7 +7,7 @@ description: Use when the user wants to save, file, capture, remember, or "inges
 
 ## Overview
 
-Files knowledge from the current working session into the user's persistent LLM Wiki at `/Users/adrianbadarau/code/llm-wiki`. The wiki is the same regardless of which project Claude is invoked from — it is a single, global personal knowledge base.
+Files knowledge from the current working session into the user's persistent LLM Wiki at `/Users/adrianbadarau/code/llm-wiki`. The wiki is the same regardless of which project or agent invokes the skill — it is a single, global personal knowledge base.
 
 **Core principle:** raw sources are immutable; the wiki layer is fully owned and edited by the LLM. Every ingest touches the source file, a summary page, the index, and the log — at minimum.
 
@@ -45,7 +45,7 @@ Do NOT use for:
 1. **Identify the source.** Three cases:
    - **External file** (article, paper, transcript): copy into `raw/` with a slugified filename including date prefix, e.g. `raw/2026-04-30-vercel-fluid-compute.md`. Never modify it after copying.
    - **Conversational knowledge** (something learned in chat, not a file): create a synthetic raw note at `raw/notes/YYYY-MM-DD-slug.md` capturing the verbatim source material / quotes / context.
-   - **URL**: fetch with WebFetch, save the markdown to `raw/`, then proceed.
+   - **URL**: fetch with the platform's web-fetch/browser tool, save the markdown to `raw/`, then proceed.
 
 2. **Read the source fully** before writing anything to the wiki.
 
@@ -88,9 +88,13 @@ confidence: high | medium | low
 
 Use today's date from the system context, not a guess. When updating an existing page, bump `updated:` and append the new source to `sources:`.
 
-## Cross-Project Usage
+## Agent Compatibility
 
 This skill is invoked from arbitrary working directories. The wiki path is absolute — never resolve relative to the cwd. Use absolute paths in every Read/Write/Edit call.
+
+Use the platform's normal file and edit tools:
+- Claude Code: `Read`, `Write`, `Edit`, `Bash`, `WebFetch`.
+- Codex Desktop/CLI: shell/file reads, `apply_patch` for edits, and the available web tool for URLs.
 
 If the user is mid-task in another project and triggers an ingest, do the ingest, then return to the prior task. Do not switch the working directory.
 

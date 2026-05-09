@@ -7,7 +7,7 @@ description: Use when the user asks a question that may have been answered or re
 
 ## Overview
 
-Searches the user's persistent LLM Wiki at `/Users/adrianbadarau/code/llm-wiki` for prior knowledge before answering or beginning research. The wiki is a single global knowledge base shared across all projects.
+Searches the user's persistent LLM Wiki at `/Users/adrianbadarau/code/llm-wiki` for prior knowledge before answering or beginning research. The wiki is a single global knowledge base shared across all projects and agent runtimes.
 
 **Core principle:** read the index first, then drill into specific pages. Cite with `[[wiki-links]]`. Don't re-derive what's already filed.
 
@@ -42,15 +42,19 @@ Do NOT use for:
 
 6. **Offer to file the answer back.** If the synthesis is non-trivial — a comparison, a derived conclusion, a connection between two prior sources — end with one line offering to ingest it as a new wiki page (see `wiki-ingest` skill). Good answers are themselves wiki content; chat-only answers evaporate.
 
-## Cross-Project Usage
+## Agent Compatibility
 
 The wiki path is absolute. Querying does not require changing the working directory and must not. Always use absolute paths in Read/Bash.
+
+Use the platform's normal file/search tools:
+- Claude Code: `Read` and `Bash`.
+- Codex Desktop/CLI: shell/file reads; prefer `rg` when available, otherwise use the listed `grep` commands.
 
 ## Quick Reference
 
 | Goal | Tool |
 |---|---|
-| Catalog scan | `Read /Users/adrianbadarau/code/llm-wiki/wiki/index.md` |
+| Catalog scan | read `/Users/adrianbadarau/code/llm-wiki/wiki/index.md` |
 | Keyword search | `grep -rli "term" /Users/adrianbadarau/code/llm-wiki/wiki/` |
 | Recent activity | `grep "^## \[" /Users/adrianbadarau/code/llm-wiki/wiki/log.md \| tail -20` |
 | Find raw source | `ls /Users/adrianbadarau/code/llm-wiki/raw/` |

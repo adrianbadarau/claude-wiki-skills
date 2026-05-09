@@ -17,9 +17,23 @@ Implements the pattern described in [Geoffrey Litt's *LLM Wiki* idea file](https
 
 Each skill is self-contained in its own directory with a single `SKILL.md` (no scripts, no dependencies).
 
-## Integration with superpowers skills
+## Codex support
 
-Two skills wire the wiki into the `systematic-debugging` and `brainstorming` superpowers skills automatically:
+This repo can be used directly as a Codex plugin:
+
+- `.codex-plugin/plugin.json` advertises the root-level `wiki-*` skill directories to Codex while preserving the existing Claude Code layout.
+- `hooks/hooks.json` wires `wiki-before` into the pre-turn `UserPromptSubmit` hook and `wiki-after` into the post-turn `Stop` hook.
+- Hook scripts emit both `hookSpecificOutput.additionalContext` and top-level `additionalContext` so Codex Desktop and Codex CLI builds can consume the reminders.
+
+You can also install the skills as plain personal skills:
+
+```bash
+cp -r claude-wiki-skills/wiki-* ~/.codex/skills/
+```
+
+## Integration with workflow skills
+
+Two skills wire the wiki into `systematic-debugging` and `brainstorming` workflow skills automatically:
 
 - **`wiki-before`** — fires before Phase 1 of debugging or before the first brainstorming question. Surfaces any prior wiki knowledge on the topic so it informs the session.
 - **`wiki-after`** — fires after root cause is confirmed + fix verified (debugging) or after the spec is approved (brainstorming). Applies a judgment gate: only files findings that are non-obvious AND cross-project reusable AND not already well-covered in the wiki. Fails silently when the gate doesn't pass.
@@ -38,7 +52,7 @@ Every page carries YAML frontmatter (`title`, `type`, `sources`, `related`, `cre
 
 ## Install
 
-These are personal Claude Code skills. Drop them into your skills directory:
+For Claude Code, drop them into your skills directory:
 
 ```bash
 git clone https://github.com/adrianbadarau/claude-wiki-skills.git
@@ -55,6 +69,15 @@ ln -s "$PWD/claude-wiki-skills/wiki-before"      ~/.claude/skills/wiki-before
 ln -s "$PWD/claude-wiki-skills/wiki-after"       ~/.claude/skills/wiki-after
 ln -s "$PWD/claude-wiki-skills/devils-advocate"  ~/.claude/skills/devils-advocate
 ```
+
+For Codex Desktop or Codex CLI as plain skills:
+
+```bash
+git clone https://github.com/adrianbadarau/claude-wiki-skills.git
+cp -r claude-wiki-skills/wiki-* ~/.codex/skills/
+```
+
+For Codex as a plugin, install or point Codex at this repository checkout. The plugin manifest is already present at `.codex-plugin/plugin.json`, and the hook config is at `hooks/hooks.json`.
 
 ## Configure your wiki path
 
@@ -81,10 +104,10 @@ your-llm-wiki/
     sources/              # one summary per raw source
     concepts/             # concept pages (cross-source synthesis)
     entities/             # entity pages (people, tools, projects, libraries)
-  CLAUDE.md               # schema / page conventions
+  CLAUDE.md or AGENTS.md  # schema / page conventions
 ```
 
-A minimal `CLAUDE.md` for the wiki repo itself is included as `examples/wiki-CLAUDE.md` for reference.
+Use `CLAUDE.md` for Claude Code and `AGENTS.md` for Codex when you want agent-specific wiki schema guidance.
 
 ## Usage from any project
 

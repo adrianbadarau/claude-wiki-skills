@@ -1,0 +1,29 @@
+{
+  "description": "LLM Wiki workflow reminders for before/after skill orchestration",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/wiki-before-context\"",
+            "timeout": 5,
+            "statusMessage": "Checking wiki-before hook"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/wiki-after-context\"",
+            "timeout": 5,
+            "statusMessage": "Checking wiki-after hook"
+          }
+        ]
+      }
+    ]
+  }
+}
