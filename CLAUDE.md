@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repo purpose
 
-Source repo for five Claude Code skills implementing the **LLM Wiki** pattern:
+Source repo for five portable Claude Code and Codex skills implementing the **LLM Wiki** pattern:
 
 - `wiki-ingest/SKILL.md` — files new knowledge into the wiki
 - `wiki-query/SKILL.md` — searches the wiki before re-researching
@@ -12,11 +12,11 @@ Source repo for five Claude Code skills implementing the **LLM Wiki** pattern:
 - `wiki-before/SKILL.md` — orchestration: queries wiki at start of systematic-debugging/brainstorming
 - `wiki-after/SKILL.md` — orchestration: judges and ingests findings at end of systematic-debugging/brainstorming
 
-No build, no tests, no dependencies. Each skill is one self-contained `SKILL.md` (frontmatter + instructions). Edits ship by either copying or symlinking the directories into `~/.claude/skills/`.
+No build, no tests, no runtime dependencies. Each skill is one self-contained `SKILL.md` (frontmatter + instructions). Edits ship by copying or symlinking the directories into `~/.claude/skills/`, copying them into `~/.codex/skills/`, or installing this checkout as a Codex plugin.
 
 ## Hardcoded wiki path
 
-All five `SKILL.md` files hardcode the absolute path `/Users/adrianbadarau/code/llm-wiki`. This is deliberate — skills run cwd-independent and must reach the same wiki regardless of which project invokes them. When editing, keep paths absolute and consistent across all three skills. Forks need a global find/replace.
+All five `SKILL.md` files hardcode the absolute path `/Users/adrianbadarau/code/llm-wiki`. This is deliberate — skills run cwd-independent and must reach the same wiki regardless of which project invokes them. When editing, keep paths absolute and consistent across all five skills. Forks need a global find/replace.
 
 ## Wiki structure the skills assume
 
@@ -39,6 +39,17 @@ Pages carry YAML frontmatter: `title`, `type`, `sources`, `related`, `created`, 
 - Frontmatter `description` field drives skill auto-activation — phrasing matters; preserve trigger keywords ("save this", "remember this", "what do we know about X", "lint the wiki", etc.).
 - Three skills are designed to compose: `wiki-ingest` writes, `wiki-query` reads, `wiki-lint` audits. Keep their division of labor clean — don't make `wiki-query` write or `wiki-ingest` lint.
 - `wiki-lint` is a *report-only* skill by design. Do not add auto-fix behavior without an explicit user-confirmation step.
+- Keep tool references portable. Prefer "use the platform's file/search/edit/web tools" and mention Claude Code/Codex examples only as equivalents.
+
+## Codex integration
+
+Codex support lives in:
+
+- `.codex-plugin/plugin.json` — Codex plugin manifest. Its `skills` field points at `./` so the existing root-level `wiki-*` directories work without duplicating files under `skills/`.
+- `hooks/hooks.json` — hook config that injects `wiki-before` guidance on `UserPromptSubmit` and `wiki-after` guidance on `Stop`.
+- `AGENTS.md` — Codex repo guidance mirroring the Claude-specific notes in this file.
+
+When changing hook text, keep it short. Hooks run often and should only remind the model when the before/after orchestration skills apply.
 
 ## Integration skills (wiki-before, wiki-after)
 
@@ -50,4 +61,4 @@ Pages carry YAML frontmatter: `title`, `type`, `sources`, `related`, `created`, 
 
 ## Testing changes
 
-No test suite. To verify a skill change, symlink the directory into `~/.claude/skills/` and trigger it from a real Claude Code session with one of its trigger phrases.
+No test suite. To verify a skill change, symlink/copy the directory into `~/.claude/skills/` or `~/.codex/skills/`, or install the repo as a Codex plugin, then trigger it from a real agent session with one of its trigger phrases.

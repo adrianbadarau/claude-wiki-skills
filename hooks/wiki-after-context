@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cat >/dev/null || true
+
+context="LLM Wiki hook: after systematic-debugging reaches confirmed root cause plus verified fix, or brainstorming reaches an approved spec, use the wiki-after skill. wiki-after must apply its judgment gate and delegate any approved filing to wiki-ingest. If the gate fails, stay silent."
+
+escaped=${context//\\/\\\\}
+escaped=${escaped//\"/\\\"}
+escaped=${escaped//$'\n'/\\n}
+escaped=${escaped//$'\r'/\\r}
+escaped=${escaped//$'\t'/\\t}
+
+printf '{\n  "additionalContext": "%s",\n  "hookSpecificOutput": {\n    "hookEventName": "Stop",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped" "$escaped"

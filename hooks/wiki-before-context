@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cat >/dev/null || true
+
+context="LLM Wiki hook: before starting systematic-debugging or brainstorming, use the wiki-before skill first. wiki-before must delegate to wiki-query and report prior wiki knowledge before the investigation/design flow begins. Skip it for direct wiki-query requests and ordinary current-repo code questions."
+
+escaped=${context//\\/\\\\}
+escaped=${escaped//\"/\\\"}
+escaped=${escaped//$'\n'/\\n}
+escaped=${escaped//$'\r'/\\r}
+escaped=${escaped//$'\t'/\\t}
+
+printf '{\n  "additionalContext": "%s",\n  "hookSpecificOutput": {\n    "hookEventName": "UserPromptSubmit",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped" "$escaped"

@@ -21,6 +21,12 @@ Do NOT use for:
 - Mid-session (only fires at the very start, before the first real action)
 - `wiki-query` triggered directly by the user (that skill handles itself)
 
+## Hook Integration
+
+Claude Code can auto-select this skill from the description. Codex Desktop/CLI plugin installs also inject a `UserPromptSubmit` reminder from `hooks/hooks.json`, so the skill is considered before the first real debugging or brainstorming action.
+
+The hook is only a reminder. Still apply the `When to Use` gate above.
+
 ## Workflow
 
 1. **Identify the topic** from the user's message: the bug being debugged, the feature being designed, the technology stack involved.
