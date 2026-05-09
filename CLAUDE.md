@@ -4,13 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repo purpose
 
-Source repo for five portable Claude Code and Codex skills implementing the **LLM Wiki** pattern:
+Source repo for six Claude Code skills implementing the **LLM Wiki** pattern plus a confrontational pre-brainstorming gate:
 
 - `wiki-ingest/SKILL.md` — files new knowledge into the wiki
 - `wiki-query/SKILL.md` — searches the wiki before re-researching
 - `wiki-lint/SKILL.md` — health-checks structure, surfaces orphans/contradictions/gaps
 - `wiki-before/SKILL.md` — orchestration: queries wiki at start of systematic-debugging/brainstorming
 - `wiki-after/SKILL.md` — orchestration: judges and ingests findings at end of systematic-debugging/brainstorming
+- `devils-advocate/SKILL.md` — orchestration: confrontationally interviews the user before brainstorming, delegates to `wiki-query` and `wiki-ingest`
 
 No build, no tests, no runtime dependencies. Each skill is one self-contained `SKILL.md` (frontmatter + instructions). Edits ship by copying or symlinking the directories into `~/.claude/skills/`, copying them into `~/.codex/skills/`, or installing this checkout as a Codex plugin.
 
@@ -51,13 +52,21 @@ Codex support lives in:
 
 When changing hook text, keep it short. Hooks run often and should only remind the model when the before/after orchestration skills apply.
 
-## Integration skills (wiki-before, wiki-after)
+## Integration skills (wiki-before, wiki-after, devils-advocate)
 
-`wiki-before` and `wiki-after` are orchestration-only — they contain no wiki logic. `wiki-before` delegates to `wiki-query`; `wiki-after` delegates to `wiki-ingest`. When editing:
+`wiki-before`, `wiki-after`, and `devils-advocate` are orchestration-only — they contain no wiki logic. `wiki-before` delegates to `wiki-query`; `wiki-after` delegates to `wiki-ingest`; `devils-advocate` delegates to both `wiki-query` (pre-grill exploration) and `wiki-ingest` (post-grill transcript capture), and hands off to `superpowers:brainstorming`. When editing:
 - Do not add wiki read/write logic to these files — all that stays in the core wiki-* skills.
 - The judgment gate criteria in `wiki-after` are critical: non-obvious, cross-project reusable, not already covered. If the gate criteria change, update the examples table too.
 - The `description` fields must explicitly name `systematic-debugging` and `brainstorming`, and must say "at the start" / "at the end" — that phrasing is how Claude knows when to auto-fire them.
 - `wiki-after` fails silently on negative judgment — do not add any message to the user when the gate is not passed.
+
+### devils-advocate specifics
+
+- The skill is **orchestration-only**. Do not add wiki I/O directly — always delegate to `wiki-query` and `wiki-ingest`.
+- The frontmatter `description` must contain both the auto-fire phrasing ("Auto-fires at the start of superpowers:brainstorming") and the manual trigger phrases ("play devil's advocate", "push back on this", "grill me", "challenge this idea", "stress-test my plan"). That phrasing is how Claude knows when to invoke it.
+- The collision rule (skip if already grilled in this conversation) is load-bearing — keep it explicit in the SKILL.md.
+- Two ingests per idea (this skill + `wiki-after`) is intentional. Do not "deduplicate" by removing one.
+- Tone is devil's advocate, not hostile. The example exchanges in the SKILL.md anchor the tone — keep them when editing.
 
 ## Testing changes
 
