@@ -9,24 +9,25 @@ This file provides guidance to Codex Desktop and Codex CLI when working with thi
 
 ## Repo purpose
 
-Source repo for five portable agent skills implementing the **LLM Wiki** pattern:
+Source repo for six portable agent skills implementing the **LLM Wiki** pattern:
 
 - `wiki-ingest/SKILL.md` files new knowledge into the wiki.
 - `wiki-query/SKILL.md` searches the wiki before re-researching.
 - `wiki-lint/SKILL.md` health-checks structure, orphans, contradictions, and gaps.
 - `wiki-before/SKILL.md` queries the wiki at the start of systematic debugging or brainstorming.
 - `wiki-after/SKILL.md` judges and ingests reusable findings at the end of systematic debugging or brainstorming.
+- `devils-advocate/SKILL.md` grills ideas before brainstorming, then hands off to `superpowers:brainstorming`.
 
 There is no build system and no runtime dependency. Each skill is one self-contained `SKILL.md`. Codex plugin support is provided by `.codex-plugin/plugin.json` and `hooks/hooks.json`.
 
 ## Hardcoded wiki path
 
-All five `SKILL.md` files hardcode the absolute path `/Users/adrianbadarau/code/llm-wiki`. This is deliberate: skills run cwd-independent and must reach the same wiki regardless of which project invokes them. When editing, keep paths absolute and consistent across all skills. Forks need a global find/replace.
+All six `SKILL.md` files hardcode the absolute path `/Users/adrianbadarau/code/llm-wiki`. This is deliberate: skills run cwd-independent and must reach the same wiki regardless of which project invokes them. When editing, keep paths absolute and consistent across all skills. Forks need a global find/replace.
 
 ## Codex support
 
 - Codex plugin discovery uses `.codex-plugin/plugin.json`.
-- The manifest points `skills` at `./` so the existing root-level `wiki-*` skill directories remain compatible with Claude Code installs.
+- The manifest points `skills` at `./` so the existing root-level skill directories remain compatible with Claude Code installs.
 - `hooks/hooks.json` wires `wiki-before` into `UserPromptSubmit` and `wiki-after` into `Stop`.
 - Hook scripts emit both Codex Desktop/Claude-style `hookSpecificOutput.additionalContext` and SDK-style top-level `additionalContext` so Codex Desktop and CLI builds can consume the reminder.
 
@@ -36,6 +37,7 @@ All five `SKILL.md` files hardcode the absolute path `/Users/adrianbadarau/code/
 - Keep the division of labor clean: `wiki-ingest` writes, `wiki-query` reads, `wiki-lint` audits, `wiki-before`/`wiki-after` orchestrate.
 - `wiki-lint` is report-only. Do not add auto-fix behavior without explicit user confirmation.
 - `wiki-before` and `wiki-after` must not duplicate wiki read/write logic. They delegate to `wiki-query` and `wiki-ingest`.
+- `devils-advocate` must not duplicate wiki read/write logic. It delegates to `wiki-query` and `wiki-ingest`, then hands off to `superpowers:brainstorming`.
 
 ## Testing changes
 
